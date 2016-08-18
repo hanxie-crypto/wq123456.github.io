@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>wq&#39;smallfullstack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近被公司派去帮内容营销的同事搞活动，慢慢的成了切图的熟练工，然而面对重要活动时候还是为了追求极致加载速度而去深入折腾一番。下面就让我来分享下自己的经验。首先简单说明下浏览器解析顺序：        -&amp;gt; HTML 解析完毕        -&amp;gt; 外部脚本和样式表加载完毕        -&amp;gt; 脚本在文档内解析并执行        -&amp;gt; HTML DOM 完全构造">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wq'smallfullstack">
+<meta property="og:url" content="http://www.smallfullstack.com/2016/08/18/loadfast1/index.html">
+<meta property="og:site_name" content="wq'smallfullstack">
+<meta property="og:description" content="最近被公司派去帮内容营销的同事搞活动，慢慢的成了切图的熟练工，然而面对重要活动时候还是为了追求极致加载速度而去深入折腾一番。下面就让我来分享下自己的经验。首先简单说明下浏览器解析顺序：        -&amp;gt; HTML 解析完毕        -&amp;gt; 外部脚本和样式表加载完毕        -&amp;gt; 脚本在文档内解析并执行        -&amp;gt; HTML DOM 完全构造">
+<meta property="og:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/FiBV0YwI_z8nIMEnazPoBUSMLa0K">
+<meta property="og:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/FiaSVPd6oNtRrelIOFzmrHd3ml-E">
+<meta property="og:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/Fk8WD0JSZgA5DqlAVI9WeDgmWV_3">
+<meta property="og:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/Fpu0wqZ4EJwmEPFfQM9WUuAWcMhn">
+<meta property="og:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/FiWBF_vg1tTbzTImjCjc0TKzMdQX">
+<meta property="og:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/Fo8pjoUNCCj0GxSdIK01uOX3GdMu">
+<meta property="og:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/Fu6kDRc8gFNvS88cqGygNWwSmVLi">
+<meta property="og:updated_time" content="2016-08-18T09:38:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="wq'smallfullstack">
+<meta name="twitter:description" content="最近被公司派去帮内容营销的同事搞活动，慢慢的成了切图的熟练工，然而面对重要活动时候还是为了追求极致加载速度而去深入折腾一番。下面就让我来分享下自己的经验。首先简单说明下浏览器解析顺序：        -&amp;gt; HTML 解析完毕        -&amp;gt; 外部脚本和样式表加载完毕        -&amp;gt; 脚本在文档内解析并执行        -&amp;gt; HTML DOM 完全构造">
+<meta name="twitter:image" content="http://www.smallfullstack.com//dn-cnode.qbox.me/FiBV0YwI_z8nIMEnazPoBUSMLa0K">
+  
+    <link rel="alternate" href="/atom.xml" title="wq&#39;smallfullstack" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">wq&#39;smallfullstack</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">主页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.smallfullstack.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-loadfast1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/18/loadfast1/" class="article-date">
+  <time datetime="2016-08-18T01:31:17.000Z" itemprop="datePublished">2016-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近被公司派去帮内容营销的同事搞活动，慢慢的成了切图的熟练工，然而面对重要活动时候还是为了追求极致加载速度而去深入折腾一番。下面就让我来分享下自己的经验。<br>首先简单说明下浏览器解析顺序：<br>        -&gt; HTML 解析完毕<br>        -&gt; 外部脚本和样式表加载完毕<br>        -&gt; 脚本在文档内解析并执行<br>        -&gt; HTML DOM 完全构造<br>        -&gt; 图片和外部内容加载<br>        -&gt; 网页完成加载<br>那么我们可以针对这些步骤做哪些工作呢？下面让我借例子道来。<br><img src="//dn-cnode.qbox.me/FiBV0YwI_z8nIMEnazPoBUSMLa0K" alt="未优化.png"><br>这张图是未优化前我用chrome记录下的，可以看到DOMContentLoaded的时间是231ms，而完全加载完时间是24.76s，当然这跟我去掉缓存也有一定影响，这样说来首页加载的速度还勉强可以，但是完全加载的时间却很难让人忍受。接下来我们看看google的pagespeed insights怎么说<br><img src="//dn-cnode.qbox.me/FiaSVPd6oNtRrelIOFzmrHd3ml-E" alt="未优化2.png"><img src="//dn-cnode.qbox.me/Fk8WD0JSZgA5DqlAVI9WeDgmWV_3" alt="未优化3.png"><img src="//dn-cnode.qbox.me/Fpu0wqZ4EJwmEPFfQM9WUuAWcMhn" alt="未优化4.png"><br>总结一下就是图片需要压缩，首屏用不到的js该去去掉，css中先把有用的样式拿出来嵌入到页面上。<br>图片压缩的问题我们可以用gulp 插件imgmin<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> minimgpath = yourproj path;</div><div class="line">gulp.task(<span class="string">'imgmin'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">   <span class="keyword">return</span> gulp.src(minimgpath + <span class="string">'/**'</span>)</div><div class="line">       	 	.pipe(imagemin(&#123;</div><div class="line">           		 progressive: <span class="literal">true</span>,</div><div class="line">            	svgoPlugins: [&#123;</div><div class="line">                	removeViewBox: <span class="literal">false</span></div><div class="line">            	&#125;],</div><div class="line">           	 use: [pngquant()]</div><div class="line">        	&#125;))</div><div class="line">        	.pipe(gulp.dest(minimgpath + <span class="string">'/'</span>));</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p> goolge建议的是无损压缩，然而你可以根据需要设置，这边默认设置可以压缩25%左右。做好压缩后接下来就是去掉相关的脚本文件和css文件<br> 到现在我们可以继续说上面的浏览器解析的事了。方案是针对首屏dom解析完毕的事件做监听，在这个事件完成后说明首屏页面加载完了，然后再去加载其他的资源。<br>  其中跟dom加载相关的事件有两个document的DOMContentLoaded 和  window 的 load 事件，两者的区别是 前一个在dom加载完后触发，不用管界面的图片什么的，而后者则是需要全部界面资源加载完后才会触发。为了更加稳妥的考虑我们参考jquery的$(document).ready();把两者共同用上<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">completed</span>(<span class="params"></span>) </span>&#123;</div><div class="line">       <span class="built_in">document</span>.removeEventListener( <span class="string">"DOMContentLoaded"</span>, completed );</div><div class="line">        <span class="built_in">window</span>.removeEventListener( <span class="string">"load"</span>, completed );</div><div class="line">        <span class="comment">//do loading</span></div><div class="line"> &#125;</div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">"DOMContentLoaded"</span>, completed );</div><div class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"load"</span>, completed );</div></pre></td></tr></table></figure></p>
+<p>这边doloading 自然就是加载 脚本。我们利用动态创建脚本以及它的onload事件来加载js及控制加载的前后顺序</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadScript</span>(<span class="params">src,callback</span>) </span>&#123;</div><div class="line">       <span class="keyword">var</span> javascript = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</div><div class="line">       javascript.async = <span class="literal">true</span>;</div><div class="line">       javascript.type = <span class="string">'text/javascript'</span>;</div><div class="line">       <span class="keyword">var</span> head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>];</div><div class="line">       head.appendChild(javascript);</div><div class="line">       <span class="keyword">if</span>(callback) &#123;</div><div class="line">          <span class="keyword">if</span>(navigator.appName.toLowerCase().indexOf(<span class="string">'netscape'</span>) === <span class="number">-1</span>) &#123;</div><div class="line">            <span class="keyword">if</span>(javascript.onreadyState === <span class="string">'complete'</span>) &#123;</div><div class="line">                    callback();</div><div class="line">			&#125;</div><div class="line">         &#125; <span class="keyword">else</span> &#123;</div><div class="line">                javascript.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                    callback();</div><div class="line">                &#125;</div><div class="line">            &#125; </div><div class="line">       &#125;</div><div class="line">      </div><div class="line">       javascript.src = src;</div><div class="line">&#125;</div><div class="line">loadScript(<span class="string">'load a script'</span>,loadB );</div></pre></td></tr></table></figure>
+<p>这样我们组合一下两段代码<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadScript</span>(<span class="params">src,callback</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> javascript = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</div><div class="line">        javascript.async = <span class="literal">true</span>;</div><div class="line">        javascript.type = <span class="string">'text/javascript'</span>;</div><div class="line">        <span class="keyword">var</span> head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>];</div><div class="line">        head.appendChild(javascript);</div><div class="line">        <span class="keyword">if</span>(callback) &#123;</div><div class="line">           <span class="keyword">if</span>(navigator.appName.toLowerCase().indexOf(<span class="string">'netscape'</span>) === <span class="number">-1</span>) &#123;</div><div class="line">            <span class="keyword">if</span>(javascript.onreadyState === <span class="string">'complete'</span>) &#123;</div><div class="line">                    callback();</div><div class="line">            &#125;</div><div class="line">         &#125; <span class="keyword">else</span> &#123;</div><div class="line">                javascript.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">                    callback();</div><div class="line">                &#125;</div><div class="line">            &#125; </div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        javascript.src = src;</div><div class="line">    &#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">addScriptQueue</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        loadScript(<span class="string">'//res.wx.qq.com/open/js/jweixin-1.0.0.js'</span>);</div><div class="line">        loadScript(<span class="string">'//cdn.yoho.cn/yohodesiner/1.0.2/js/lib/swiper-3.3.1.jquery.min.js'</span>);</div><div class="line">        loadScript(<span class="string">'&#123;&#123;jspath&#125;&#125;loading_yohood.js?v=1'</span>);</div><div class="line">        loadScript(<span class="string">'&#123;&#123;jspath&#125;&#125;yohood/index.wechat.js?v=1'</span>);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">completed</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="built_in">document</span>.removeEventListener( <span class="string">"DOMContentLoaded"</span>, completed );</div><div class="line">        <span class="built_in">window</span>.removeEventListener( <span class="string">"load"</span>, completed );</div><div class="line">        loadScript(<span class="string">'http://cdn.yoho.cn/yohodesiner/1.0.2/js/lib/jquery-1.10.1.min.js'</span>,addScriptQueue);</div><div class="line">    &#125;</div><div class="line"> <span class="built_in">document</span>.addEventListener(<span class="string">"DOMContentLoaded"</span>, completed );</div><div class="line"> <span class="built_in">window</span>.addEventListener(<span class="string">"load"</span>, completed );</div></pre></td></tr></table></figure></p>
+<p>就可以实现我们想要的等首屏dom加载完后按顺序动态加载需要的脚本。至于css 的处理方式可以看看 pagespeed insights给的<br><img src="//dn-cnode.qbox.me/FiWBF_vg1tTbzTImjCjc0TKzMdQX" alt="css优化.png"><br>考虑到css本身文件较小我没有去对他也进行后续加载。下面是优化后的结果：<br><img src="//dn-cnode.qbox.me/Fo8pjoUNCCj0GxSdIK01uOX3GdMu" alt="优化后.png"><br><img src="//dn-cnode.qbox.me/Fu6kDRc8gFNvS88cqGygNWwSmVLi" alt="优化后2.png"><br>还是变快了的。<br>这边是这次活动 <a href="http://activity.m.yohobuy.com/yohood" target="_blank" rel="external">yohood</a>的链接，有兴趣可以点点。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.smallfullstack.com/2016/08/18/loadfast1/" data-id="cirzpq84w00004ws03284rlf4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/17/facetotianmao/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">前端</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/18/loadfast1/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/17/facetotianmao/">前端</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/12/jsbase1/">js 基本概念 (主要是es5)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 wq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">主页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

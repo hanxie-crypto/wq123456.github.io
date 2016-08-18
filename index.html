@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.smallfullstack.com"></form>
@@ -74,6 +74,16 @@
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/18/loadfast1/">首屏加载优化</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
         <p>最近被公司派去帮内容营销的同事搞活动，慢慢的成了切图的熟练工，然而面对重要活动时候还是为了追求极致加载速度而去深入折腾一番。下面就让我来分享下自己的经验。<br>首先简单说明下浏览器解析顺序：<br>        -&gt; HTML 解析完毕<br>        -&gt; 外部脚本和样式表加载完毕<br>        -&gt; 脚本在文档内解析并执行<br>        -&gt; HTML DOM 完全构造<br>        -&gt; 图片和外部内容加载<br>        -&gt; 网页完成加载<br>那么我们可以针对这些步骤做哪些工作呢？下面让我借例子道来。<br><img src="//dn-cnode.qbox.me/FiBV0YwI_z8nIMEnazPoBUSMLa0K" alt="未优化.png"><br>这张图是未优化前我用chrome记录下的，可以看到DOMContentLoaded的时间是231ms，而完全加载完时间是24.76s，当然这跟我去掉缓存也有一定影响，这样说来首页加载的速度还勉强可以，但是完全加载的时间却很难让人忍受。接下来我们看看google的pagespeed insights怎么说<br><img src="//dn-cnode.qbox.me/FiaSVPd6oNtRrelIOFzmrHd3ml-E" alt="未优化2.png"><img src="//dn-cnode.qbox.me/Fk8WD0JSZgA5DqlAVI9WeDgmWV_3" alt="未优化3.png"><img src="//dn-cnode.qbox.me/Fpu0wqZ4EJwmEPFfQM9WUuAWcMhn" alt="未优化4.png"><br>总结一下就是图片需要压缩，首屏用不到的js该去去掉，css中先把有用的样式拿出来嵌入到页面上。<br>图片压缩的问题我们可以用gulp 插件imgmin<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> minimgpath = yourproj path;</div><div class="line">gulp.task(<span class="string">'imgmin'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">   <span class="keyword">return</span> gulp.src(minimgpath + <span class="string">'/**'</span>)</div><div class="line">       	 	.pipe(imagemin(&#123;</div><div class="line">           		 progressive: <span class="literal">true</span>,</div><div class="line">            	svgoPlugins: [&#123;</div><div class="line">                	removeViewBox: <span class="literal">false</span></div><div class="line">            	&#125;],</div><div class="line">           	 use: [pngquant()]</div><div class="line">        	&#125;))</div><div class="line">        	.pipe(gulp.dest(minimgpath + <span class="string">'/'</span>));</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
@@ -86,7 +96,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.smallfullstack.com/2016/08/18/loadfast1/" data-id="cirzpq84w00004ws03284rlf4" class="article-share-link">Share</a>
+      <a data-url="http://www.smallfullstack.com/2016/08/18/loadfast1/" data-id="cirzpq84w00004ws03284rlf4" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -123,7 +133,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.smallfullstack.com/2016/08/17/facetotianmao/" data-id="cirycv3g00000i7s02uyjdzcm" class="article-share-link">Share</a>
+      <a data-url="http://www.smallfullstack.com/2016/08/17/facetotianmao/" data-id="cirycv3g00000i7s02uyjdzcm" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -204,7 +214,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://www.smallfullstack.com/2016/08/12/jsbase1/" data-id="cirycv3gr0001i7s0pm3cxptj" class="article-share-link">Share</a>
+      <a data-url="http://www.smallfullstack.com/2016/08/12/jsbase1/" data-id="cirycv3gr0001i7s0pm3cxptj" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -239,12 +249,12 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2016/08/18/loadfast1/">(no title)</a>
+            <a href="/2016/08/18/loadfast1/">首屏加载优化</a>
           </li>
         
           <li>
@@ -268,7 +278,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 wq<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>

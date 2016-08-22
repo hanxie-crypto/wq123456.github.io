@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>变量、作用域和内存问题 | wq&#39;smallfullstack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ps:(&amp;#x6458;&amp;#x6284;&amp;#x81EA;javascript&amp;#x9AD8;&amp;#x7EA7;&amp;#x7A0B;&amp;#x5E8F;&amp;#x8BBE;&amp;#x8BA1;&amp;#x7B2C;&amp;#x4E09;&amp;#x7248;)
+1.&amp;#x7406;&amp;#x89E3;&amp;#x57FA;&amp;#x672C;&amp;#x7C7B;&amp;#x578B;&amp;#x548C;&amp;#x5F15;&amp;#x7528;&amp;#x7C7B;&amp;#x578">
+<meta property="og:type" content="article">
+<meta property="og:title" content="变量、作用域和内存问题">
+<meta property="og:url" content="http://www.smallfullstack.com/2016/08/22/jsbase2/index.html">
+<meta property="og:site_name" content="wq'smallfullstack">
+<meta property="og:description" content="ps:(&amp;#x6458;&amp;#x6284;&amp;#x81EA;javascript&amp;#x9AD8;&amp;#x7EA7;&amp;#x7A0B;&amp;#x5E8F;&amp;#x8BBE;&amp;#x8BA1;&amp;#x7B2C;&amp;#x4E09;&amp;#x7248;)
+1.&amp;#x7406;&amp;#x89E3;&amp;#x57FA;&amp;#x672C;&amp;#x7C7B;&amp;#x578B;&amp;#x548C;&amp;#x5F15;&amp;#x7528;&amp;#x7C7B;&amp;#x578">
+<meta property="og:image" content="http://www.smallfullstack.com/2016/08/22/jsbase2/./1471836747997.png">
+<meta property="og:image" content="http://www.smallfullstack.com/2016/08/22/jsbase2/./1471836670787.png">
+<meta property="og:updated_time" content="2016-08-22T05:42:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="变量、作用域和内存问题">
+<meta name="twitter:description" content="ps:(&amp;#x6458;&amp;#x6284;&amp;#x81EA;javascript&amp;#x9AD8;&amp;#x7EA7;&amp;#x7A0B;&amp;#x5E8F;&amp;#x8BBE;&amp;#x8BA1;&amp;#x7B2C;&amp;#x4E09;&amp;#x7248;)
+1.&amp;#x7406;&amp;#x89E3;&amp;#x57FA;&amp;#x672C;&amp;#x7C7B;&amp;#x578B;&amp;#x548C;&amp;#x5F15;&amp;#x7528;&amp;#x7C7B;&amp;#x578">
+<meta name="twitter:image" content="http://www.smallfullstack.com/2016/08/22/jsbase2/./1471836747997.png">
+  
+    <link rel="alternate" href="/atom.xml" title="wq&#39;smallfullstack" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">wq&#39;smallfullstack</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">主页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.smallfullstack.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-jsbase2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/22/jsbase2/" class="article-date">
+  <time datetime="2016-08-22T01:27:54.000Z" itemprop="datePublished">2016-08-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      变量、作用域和内存问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ps:(&#x6458;&#x6284;&#x81EA;javascript&#x9AD8;&#x7EA7;&#x7A0B;&#x5E8F;&#x8BBE;&#x8BA1;&#x7B2C;&#x4E09;&#x7248;)</p>
+<p>1.&#x7406;&#x89E3;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;<br>2.&#x7406;&#x89E3;&#x6267;&#x884C;&#x73AF;&#x5883;<br>3.&#x7406;&#x89E3;&#x5783;&#x573E;&#x56DE;&#x6536;</p>
+<h3 id="&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;"><a href="#&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;" class="headerlink" title="&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;"></a>&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;</h3><p>ECMAScript&#x53D8;&#x91CF;&#x53EF;&#x80FD;&#x5305;&#x542B;&#x4E24;&#x79CD;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x7684;&#x503C;:&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x503C;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x503C;&#x3002;<strong>&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x503C;</strong>&#x6307;&#x7684;&#x662F;&#x7B80;&#x5355;&#x7684;&#x6570;&#x636E;&#x6BB5;&#xFF0C;&#x800C;<strong>&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x503C;</strong>&#x6307;&#x7684;&#x662F;&#x90A3;&#x4E9B;&#x53EF;&#x80FD;&#x7531;&#x591A;&#x4E2A;&#x503C;&#x6784;&#x6210;&#x7684;&#x5BF9;&#x8C61;&#x3002;&#x5728;&#x5C06;&#x4E00;&#x4E2A;&#x503C;&#x8D4B;&#x7ED9;&#x53D8;&#x91CF;&#x65F6;&#xFF0C;&#x89E3;&#x6790;&#x5668;&#x5FC5;&#x987B;&#x786E;&#x5B9A;&#x8FD9;&#x4E2A;&#x503C;&#x662F;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x8FD8;&#x662F;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x3002;<br><strong>undefined,null,boolean,number,string</strong>&#x8FD9;5&#x79CD;&#x57FA;&#x672C;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x662F;&#x6309;&#x503C;&#x8BBF;&#x95EE;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x64CD;&#x4F5C;&#x4FDD;&#x5B58;&#x5728;&#x53D8;&#x91CF;&#x4E2D;&#x5B9E;&#x9645;&#x7684;&#x503C;&#x3002;</p>
+<h4 id="&#x52A8;&#x6001;&#x7684;&#x5C5E;&#x6027;"><a href="#&#x52A8;&#x6001;&#x7684;&#x5C5E;&#x6027;" class="headerlink" title="&#x52A8;&#x6001;&#x7684;&#x5C5E;&#x6027;"></a>&#x52A8;&#x6001;&#x7684;&#x5C5E;&#x6027;</h4><p>&#x5B9A;&#x4E49;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x503C;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x503C;&#x7684;&#x65B9;&#x5F0F;&#x662F;&#x7C7B;&#x4F3C;&#x7684;&#xFF1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x5E76;&#x4E3A;&#x8BE5;&#x53D8;&#x91CF;&#x590D;&#x5236;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x8FD9;&#x4E2A;&#x503C;&#x4FDD;&#x5B58;&#x5230;&#x53D8;&#x91CF;&#x4E2D;&#x4EE5;&#x540E;&#xFF0C;&#x5BF9;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x503C;&#x53EF;&#x4EE5;&#x6267;&#x884C;&#x7684;&#x64CD;&#x4F5C;&#x5927;&#x76F8;&#x5F84;&#x5EAD;&#x3002;&#x5BF9;&#x4E8E;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x7684;&#x503C;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4E3A;&#x5176;&#x6DFB;&#x52A0;&#x5C5E;&#x6027;&#x548C;&#x65B9;&#x6CD5;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x6539;&#x53D8;&#x548C;&#x5220;&#x9664;&#x5176;&#x5C5E;&#x6027;&#x548C;&#x65B9;&#x6CD5;&#x3002;<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> person = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line">person.name = <span class="string">&apos;wq&apos;</span>;</div><div class="line">alert(person.name); <span class="comment">// &apos;wq&apos;</span></div></pre></td></tr></table></figure></p>
+<p>&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x5219;&#x4E0D;&#x80FD;&#x8D4B;&#x503C;<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> name = <span class="string">&apos;wq&apos;</span>;</div><div class="line">name.age = <span class="number">27</span>;</div><div class="line">alert(name.age) ;<span class="comment">//undefined</span></div></pre></td></tr></table></figure></p>
+<h4 id="&#x590D;&#x5236;&#x53D8;&#x91CF;&#x503C;"><a href="#&#x590D;&#x5236;&#x53D8;&#x91CF;&#x503C;" class="headerlink" title="&#x590D;&#x5236;&#x53D8;&#x91CF;&#x503C;"></a>&#x590D;&#x5236;&#x53D8;&#x91CF;&#x503C;</h4><p>&#x9664;&#x4E86;&#x4FDD;&#x5B58;&#x65B9;&#x5F0F;&#x4E0D;&#x540C;&#x4EE5;&#x4E3A;&#xFF0C;&#x5728;&#x4ECE;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x5411;&#x53E6;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x590D;&#x5236;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x503C;&#x548C;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x503C;&#x65F6;&#xFF0C;&#x4E5F;&#x5B58;&#x5728;&#x4E0D;&#x540C;&#x3002;&#x5982;&#x679C;&#x4ECE;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x5411;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x590D;&#x5236;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x7684;&#x503C;&#xFF0C;&#x4F1A;&#x5728;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x4E0A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x503C;&#xFF0C;&#x7136;&#x540E;&#x628A;&#x8BE5;&#x503C;&#x590D;&#x5236;&#x5230;&#x4E3A;&#x65B0;&#x53D8;&#x91CF;&#x5206;&#x914D;&#x7684;&#x4F4D;&#x7F6E;&#x4E0A;<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> num1 = <span class="number">5</span>;</div><div class="line"><span class="keyword">var</span> num2 = num1;</div></pre></td></tr></table></figure></p>
+<p>num1&#x548C;num2&#x4E2D;&#x7684;5&#x72EC;&#x7ACB;</p>
+<p><img src="/2016/08/22/jsbase2/./1471836747997.png" alt="Alt text"></p>
+<p>&#x5F53;&#x4ECE;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x5411;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x590D;&#x5236;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x7684;&#x503C;&#x65F6;&#xFF0C;&#x540C;&#x6837;&#x4E5F;&#x4F1A;&#x5C06;&#x5B58;&#x50A8;&#x5728;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x4E2D;&#x7684;&#x503C;&#x590D;&#x5236;&#x4E00;&#x4EFD;&#x653E;&#x5230;&#x4E3A;&#x65B0;&#x53D8;&#x91CF;&#x5206;&#x914D;&#x7684;&#x7A7A;&#x95F4;&#x4E2D;&#x3002;&#x4E0D;&#x540C;&#x7684;&#x662F;&#xFF0C;&#x8FD9;&#x4E2A;&#x503C;&#x5F97;&#x526F;&#x672C;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x4E00;&#x4E2A;&#x6307;&#x9488;&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;&#x6307;&#x9488;&#x6307;&#x5411;&#x5B58;&#x50A8;&#x5728;&#x5806;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x3002;&#x590D;&#x5236;&#x64CD;&#x4F5C;&#x7ED3;&#x675F;&#x540E;&#xFF0C;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#x5B9E;&#x9645;&#x4E0A;&#x5F15;&#x7528;&#x540C;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x6539;&#x53D8;&#x5176;&#x4E2D;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x5C31;&#x4F1A;&#x5F71;&#x54CD;&#x53E6;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x3002;<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line"><span class="keyword">var</span> obj2 = obj1;</div><div class="line">obj1.name = <span class="string">&apos;wq&apos;</span>;</div><div class="line">alert(obj2.name); <span class="comment">//wq</span></div></pre></td></tr></table></figure></p>
+<p><img src="/2016/08/22/jsbase2/./1471836670787.png" alt="Alt text"></p>
+<h6 id="&#x4F20;&#x9012;&#x53C2;&#x6570;"><a href="#&#x4F20;&#x9012;&#x53C2;&#x6570;" class="headerlink" title="&#x4F20;&#x9012;&#x53C2;&#x6570;"></a>&#x4F20;&#x9012;&#x53C2;&#x6570;</h6><p>ECMAScript &#x4E2D;&#x6240;&#x6709;&#x51FD;&#x6570;&#x7684;&#x53C2;&#x6570;&#x90FD;&#x662F;&#x6309;&#x503C;&#x4F20;&#x9012;&#x7684;&#x3002;&#x8BBF;&#x95EE;&#x53D8;&#x91CF;&#x5206;&#x6309;&#x503C;&#x4F20;&#x9012;&#x548C;&#x6309;&#x5F15;&#x7528;&#x4F20;&#x9012;&#xFF0C;&#x800C;&#x53C2;&#x6570;&#x53EA;&#x80FD;&#x6309;&#x503C;&#x4F20;&#x9012;&#x3002;<br>&#x5728;&#x5411;&#x53C2;&#x6570;&#x4F20;&#x9012;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x7684;&#x503C;&#x65F6;&#xFF0C;&#x88AB;&#x4E13;&#x9012;&#x7684;&#x503C;&#x4F1A;&#x88AB;&#x590D;&#x5236;&#x7ED9;&#x4E00;&#x4E2A;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#xFF08;&#x5373;&#x547D;&#x540D;&#x53C2;&#x6570;&#xFF0C;&#x6216;&#x8005;&#x8BF4;&#x662F;arguments&#x5BF9;&#x8C61;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#xFF09;&#x3002;&#x5728;&#x5411;&#x53C2;&#x6570;&#x4F20;&#x9012;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x7684;&#x503C;&#x65F6;&#xFF0C;&#x4F1A;&#x628A;&#x8FD9;&#x4E2A;&#x503C;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x5730;&#x5740;&#x590D;&#x5236;&#x7ED9;&#x4E00;&#x4E2A;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x7684;&#x53D8;&#x5316;&#x4F1A;&#x53CD;&#x5E94;&#x5728;&#x51FD;&#x6570;&#x7684;&#x5916;&#x90E8;&#x3002;<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">addTen</span>(<span class="params">num</span>) </span>{</div><div class="line">	num += <span class="number">10</span>;</div><div class="line">	<span class="keyword">return</span> num;</div><div class="line">}</div><div class="line"><span class="keyword">var</span> count = <span class="number">20</span>;</div><div class="line"><span class="keyword">var</span> result = addTen(count);</div><div class="line">alert(count); <span class="comment">//20,&#x6CA1;&#x6709;&#x53D8;&#x5316;</span></div><div class="line">alert(result); <span class="comment">//30</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">setName</span>(<span class="params">obj</span>) </span>{</div><div class="line">	obj.name = <span class="string">&apos;nicholas&apos;</span></div><div class="line">}</div><div class="line"><span class="keyword">var</span> person = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line">setName(person);</div><div class="line">alert(person.name); <span class="comment">//&apos;nicholas&apos;;</span></div></pre></td></tr></table></figure></p>
+<h6 id="&#x68C0;&#x6D4B;&#x7C7B;&#x578B;"><a href="#&#x68C0;&#x6D4B;&#x7C7B;&#x578B;" class="headerlink" title="&#x68C0;&#x6D4B;&#x7C7B;&#x578B;"></a>&#x68C0;&#x6D4B;&#x7C7B;&#x578B;</h6><p>&#x8981;&#x68C0;&#x6D4B;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x662F;&#x4E0D;&#x662F;&#x57FA;&#x672C;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x4F7F;&#x7528;<strong>typeof</strong>.&#x5982;&#x679C;&#x53D8;&#x91CF;&#x662F;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x6216;&#x8005;null&#x4F1A;&#x8FD4;&#x56DE;&#x2019;object&#x2018;<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> s = <span class="string">&apos;wq&apos;</span>;</div><div class="line"><span class="keyword">var</span> b = <span class="literal">true</span>;</div><div class="line"><span class="keyword">var</span> i = <span class="number">22</span>;</div><div class="line"><span class="keyword">var</span> u;</div><div class="line"><span class="keyword">var</span> n = <span class="literal">null</span>;</div><div class="line"><span class="keyword">var</span> o = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line">alert(<span class="keyword">typeof</span> s); <span class="comment">//string</span></div><div class="line">alert(<span class="keyword">typeof</span>  b); <span class="comment">//boolean</span></div><div class="line">alert(<span class="keyword">typeof</span> i); <span class="comment">//number</span></div><div class="line">alert(<span class="keyword">typeof</span> u); <span class="comment">//undefined</span></div><div class="line">alert(<span class="keyword">typeof</span> n); <span class="comment">//object</span></div><div class="line">alert(<span class="keyword">typeof</span> o); <span class="comment">//object</span></div></pre></td></tr></table></figure></p>
+<p>&#x68C0;&#x6D4B;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x65F6;<strong>instanceof</strong>&#x5219;&#x66F4;&#x4F73;<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">alert(person <span class="keyword">instanceof</span> <span class="built_in">Object</span>);</div><div class="line">alert(colors <span class="keyword">instanceof</span> <span class="built_in">Array</span>);</div><div class="line">alert(pattern <span class="keyword">instanceof</span> <span class="built_in">RegExp</span>);</div></pre></td></tr></table></figure></p>
+<p>&#x6839;&#x636E;&#x89C4;&#x5B9A;&#xFF0C;&#x6240;&#x6709;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x7684;&#x503C;&#x90FD;&#x662F;Object&#x7684;&#x5B9E;&#x4F8B;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x68C0;&#x6D4B;&#x4E00;&#x4E2A;&#x6613;&#x7528;&#x7C7B;&#x578B;&#x503C;&#x548C;Object&#x6784;&#x9020;&#x51FD;&#x6570;&#x7684;&#x65F6;&#x5019;&#xFF0C;instanceof &#x64CD;&#x4F5C;&#x7B26;&#x59CB;&#x7EC8;&#x8FD4;&#x56DE;true&#x3002;&#x5F53;&#x7136;&#xFF0C;&#x5982;&#x679C;&#x4F7F;&#x7528;instanceof&#x64CD;&#x4F5C;&#x7B26;&#x68C0;&#x6D4B;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x7684;&#x503C;&#xFF0C;&#x5219;&#x8BE5;&#x64CD;&#x4F5C;&#x7B26;&#x59CB;&#x7EC8;&#x8FD4;&#x56DE;false,&#x56E0;&#x4E3A;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#x4E0D;&#x662F;&#x5BF9;&#x8C61;&#x3002;</p>
+<h3 id="&#x6267;&#x884C;&#x73AF;&#x5883;&#x53CA;&#x4F5C;&#x7528;&#x57DF;"><a href="#&#x6267;&#x884C;&#x73AF;&#x5883;&#x53CA;&#x4F5C;&#x7528;&#x57DF;" class="headerlink" title="&#x6267;&#x884C;&#x73AF;&#x5883;&#x53CA;&#x4F5C;&#x7528;&#x57DF;"></a>&#x6267;&#x884C;&#x73AF;&#x5883;&#x53CA;&#x4F5C;&#x7528;&#x57DF;</h3><p>&#x5F53;&#x4EE3;&#x7801;&#x5728;&#x4E00;&#x4E2A;&#x73AF;&#x5883;&#x4E2D;&#x6267;&#x884C;&#x65F6;&#xFF0C;&#x4F1A;&#x521B;&#x5EFA;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x7684;&#x4E00;&#x4E2A;&#x4F5C;&#x7528;&#x96E8;&#x94FE;&#x3002;&#x4F5C;&#x7528;&#x57DF;&#x94FE;&#x7684;&#x7528;&#x9014;&#x662F;&#x4FDD;&#x8BC1;&#x5BF9;&#x6267;&#x884C;&#x73AF;&#x5883;&#x6709;&#x6743;&#x8BBF;&#x95EE;&#x7684;&#x6240;&#x6709;&#x53D8;&#x91CF;&#x548C;&#x51FD;&#x6570;&#x7684;&#x6709;&#x5E8F;&#x8BBF;&#x95EE;&#x3002;&#x4F5C;&#x7528;&#x57DF;&#x94FE;&#x7684;&#x524D;&#x7AEF;&#xFF0C;&#x59CB;&#x7EC8;&#x90FD;&#x662F;&#x5F53;&#x524D;&#x6267;&#x884C;&#x7684;&#x4EE3;&#x7801;&#x6240;&#x5728;&#x73AF;&#x5883;&#x7684;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x3002;&#x5982;&#x679C;&#x8FD9;&#x4E2A;&#x73AF;&#x5883;&#x662F;&#x51FD;&#x6570;&#xFF0C;&#x5219;&#x5C06;&#x5176;<strong>&#x6D3B;&#x52A8;&#x5BF9;&#x8C61;</strong>&#x4F5C;&#x4E3A;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x3002;&#x6D3B;&#x52A8;&#x5BF9;&#x8C61;&#x5728;&#x6700;&#x5F00;&#x59CB;&#x65F6;&#x53EA;&#x5305;&#x542B;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#xFF0C;&#x5373;arguments&#x5BF9;&#x8C61;&#xFF08;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#x5728;&#x5168;&#x5C40;&#x73AF;&#x5883;&#x4E2D;&#x662F;&#x4E0D;&#x5B58;&#x5728;&#x7684;&#xFF09;&#x3002;&#x4F5C;&#x7528;&#x57DF;&#x94FE;&#x4E2D;&#x7684;&#x4E0B;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x6765;&#x81EA;&#x5305;&#x542B;&#xFF08;&#x5916;&#x90E8;&#xFF09;&#x73AF;&#x5883;&#xFF0C;&#x800C;&#x518D;&#x4E0B;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;&#x5219;&#x6765;&#x81EA;&#x4E0B;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x73AF;&#x5883;&#x3002;&#x8FD9;&#x6837;&#xFF0C;&#x4E00;&#x76F4;&#x5EF6;&#x7EED;&#x5230;&#x5168;&#x5C40;&#x6267;&#x884C;&#x73AF;&#x5883;&#xFF1B;&#x5168;&#x5C40;&#x6267;&#x884C;&#x73AF;&#x5883;&#x7684;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x59CB;&#x7EC8;&#x90FD;&#x662F;&#x4F5C;&#x7528;&#x57DF;&#x94FE;&#x4E2D;&#x7684;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x3002;<br>&#x6807;&#x8BC6;&#x7B26;&#x89E3;&#x6790;&#x662F;&#x6CBF;&#x7740;&#x4F5C;&#x7528;&#x57DF;&#x94FE;&#x4E00;&#x7EA7;&#x4E00;&#x96C6;&#x5730;&#x641C;&#x7D22;&#x6807;&#x8BC6;&#x7B26;&#x7684;&#x8FC7;&#x7A0B;&#x3002;&#x641C;&#x7D22;&#x8FC7;&#x7A0B;&#x59CB;&#x7EC8;&#x4ECE;&#x4F5C;&#x7528;&#x57DF;&#x94FE;&#x7684;&#x524D;&#x7AEF;&#x5F00;&#x59CB;&#xFF0C;&#x7136;&#x540E;&#x9010;&#x7EA7;&#x7684;&#x5411;&#x540E;&#x56DE;&#x6EAF;&#xFF0C;&#x77E5;&#x9053;&#x627E;&#x5230;&#x6807;&#x8BC6;&#x7B26;&#x4E3A;&#x4E4B;&#x3002;&#xFF08;&#x5982;&#x679C;&#x627E;&#x4E0D;&#x5230;&#xFF0C;&#x901A;&#x5E38;&#x4F1A;&#x5BFC;&#x81F4;&#x9519;&#x8BEF;&#x53D1;&#x751F;&#xFF09;<br>&#x5728;&#x5C40;&#x90E8;&#x4F5C;&#x7528;&#x57DF;&#x4E2D;&#x5B9A;&#x4E49;&#x7684;&#x53D8;&#x91CF;&#x53EF;&#x4EE5;&#x5728;&#x5C40;&#x90E8;&#x73AF;&#x5883;&#x4E2D;&#x4E0E;&#x5168;&#x5C40;&#x53D8;&#x91CF;&#x4E92;&#x6362;&#x4F7F;&#x7528;&#x3002;<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> color = <span class="string">&apos;blue&apos;</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">changeColor</span>(<span class="params"></span>) </span>{</div><div class="line">	<span class="keyword">var</span> anotherColor = <span class="string">&apos;red&apos;</span>;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">function</span> <span class="title">swapColors</span>(<span class="params"></span>) </span>{</div><div class="line">		<span class="keyword">var</span> tempColor =  anotherColor;</div><div class="line">		anotherColor = color;</div><div class="line">		color = tempColor;</div><div class="line">		<span class="comment">//&#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE; color,anotherColor&#x548C;tempColor</span></div><div class="line">		</div><div class="line">	}</div><div class="line">	swapColors();</div><div class="line">	<span class="comment">//&#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;color&#x548C;anotherColor &#x4F46;&#x4E0D;&#x80FD;&#x8BBF;&#x95EE;tempColor;</span></div><div class="line">}</div><div class="line">changeColor();</div><div class="line"><span class="comment">//&#x8FD9;&#x91CC;&#x53EA;&#x80FD;&#x8BBF;&#x95EE;color;</span></div></pre></td></tr></table></figure></p>
+<p>&#x603B;&#x7ED3;&#x4E00;&#x4E0B;&#x5C31;&#x662F;&#x5916;&#x90E8;&#x4E0D;&#x80FD;&#x8BBF;&#x95EE;&#x5185;&#x90E8;&#xFF0C;&#x5185;&#x90E8;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x5916;&#x90E8;&#x3002;</p>
+<p>######&#x5EF6;&#x957F;&#x4F5C;&#x7528;&#x57DF;&#x94FE;<br>&#x65B9;&#x6CD5;&#xFF1A;<br>1.try&#x2026;catch<br>2.with<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">buildUrl</span>(<span class="params"></span>) </span>{</div><div class="line">	<span class="keyword">var</span> qs = <span class="string">&apos;?debug=true&apos;</span>;</div><div class="line">	<span class="keyword">with</span>(location) {</div><div class="line">		<span class="keyword">var</span> url = href + qs;</div><div class="line">	}</div><div class="line">	<span class="keyword">return</span> url;</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x5728;&#x6B64;&#xFF0C;with&#x5BF9;&#x8C61;&#x63A5;&#x6536;&#x7684;&#x662F;location&#x5BF9;&#x8C61;&#xFF0C;&#x56E0;&#x6B64;&#x5176;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x4E2D;&#x5C31;&#x5305;&#x542B;&#x4E86;location&#x5BF9;&#x8C61;&#x7684;&#x6240;&#x6709;&#x5C5E;&#x6027;&#x548C;&#x65B9;&#x6CD5;&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x88AB;&#x6DFB;&#x52A0;&#x5230;&#x4E86;&#x4F5C;&#x7528;&#x57DF;&#x94FE;&#x7684;&#x524D;&#x7AEF;&#x3002;buildUrl()&#x51FD;&#x6570;&#x4E2D;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x53D8;&#x91CF;qs&#x3002;&#x5F53;&#x5728;with&#x8BED;&#x53E5;&#x5F15;&#x7528;href&#x53D8;&#x91CF;&#x65F6;&#xFF08;&#x5B9E;&#x9645;&#x5F15;&#x7528;&#x7684;&#x662F;location.href&#xFF09;,&#x53EF;&#x4EE5;&#x5728;&#x5F53;&#x524D;&#x6267;&#x884C;&#x73AF;&#x5883;&#x7684;&#x53D8;&#x91CF;&#x5BF9;&#x8C61;&#x4E2D;&#x627E;&#x5230;&#x3002;</p>
+<p>######&#x6CA1;&#x6709;&#x5757;&#x7EA7;&#x4F5C;&#x7528;&#x57DF;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>(<span class="literal">true</span>) {</div><div class="line"> <span class="keyword">var</span> color = <span class="string">&apos;blue&apos;</span>;</div><div class="line">}</div><div class="line">alert(color); <span class="comment">//&apos;blue&apos;;</span></div></pre></td></tr></table></figure>
+<p>&#x8FD9;&#x91CC;&#x5728;if&#x4E2D;&#x5B9A;&#x4E49;&#x4E86;color&#x53D8;&#x91CF;&#x3002;&#x5982;&#x679C;&#x662F;&#x5728;c&#x3001;c++&#x3001;java&#x4E2D;&#xFF0C;color&#x4F1A;&#x5728;if&#x8BED;&#x53E5;&#x6267;&#x884C;&#x5B8C;&#x6BD5;&#x540E;&#x88AB;&#x9500;&#x6BC1;&#x3002;<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++) {</div><div class="line">	doSomething(i);</div><div class="line">}</div><div class="line">alert(i);<span class="comment">//10;</span></div></pre></td></tr></table></figure></p>
+<p>###&#x5783;&#x573E;&#x6536;&#x96C6;</p>
+<p>######&#x6807;&#x8BB0;&#x6E05;&#x9664;</p>
+<p>######&#x5F15;&#x7528;&#x8BA1;&#x6570;</p>
+<p>######&#x6027;&#x80FD;&#x95EE;&#x9898;<br>&#x5783;&#x573E;&#x6536;&#x96C6;&#x5668;&#x662F;&#x5468;&#x671F;&#x6027;&#x8FD0;&#x884C;&#x7684;&#xFF0C;&#x800C;&#x4E14;&#x5982;&#x679C;&#x4E3A;&#x53D8;&#x91CF;&#x5206;&#x914D;&#x7684;&#x5185;&#x5B58;&#x6570;&#x91CF;&#x5F88;&#x5BA2;&#x89C2;&#xFF0C;&#x90A3;&#x4E48;&#x56DE;&#x6536;&#x5DE5;&#x4F5C;&#x91CF;&#x5F88;&#x5927;&#x3002;</p>
+<p>######&#x7BA1;&#x7406;&#x5185;&#x5B58;<br>&#x4F7F;&#x7528;&#x5177;&#x5907;&#x5783;&#x573E;&#x6536;&#x96C6;&#x673A;&#x5236;&#x7684;&#x8BED;&#x8A00;&#x7F16;&#x5199;&#x7A0B;&#x5E8F;&#xFF0C;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x4E00;&#x822C;&#x4E0D;&#x5FC5;&#x64CD;&#x5FC3;&#x5185;&#x5B58;&#x7BA1;&#x7406;&#x3002;<br>&#x786E;&#x4FDD;&#x5360;&#x7528;&#x6700;&#x5C11;&#x7684;&#x5185;&#x5B58;&#x53EF;&#x4EE5;&#x8BA9;&#x9875;&#x9762;&#x83B7;&#x5F97;&#x66F4;&#x597D;&#x7684;&#x6027;&#x80FD;&#x3002;&#x4F18;&#x5316;&#x5185;&#x5B58;&#x7684;&#x6700;&#x4F73;&#x65B9;&#x5F0F;&#x5C31;&#x662F;&#x4E3A;&#x6267;&#x884C;&#x4E2D;&#x7684;&#x4EE3;&#x7801;&#x53EA;&#x4FDD;&#x5B58;&#x5FC5;&#x8981;&#x7684;&#x6570;&#x636E;&#x3002;&#x4E00;&#x65E6;&#x6570;&#x636E;&#x4E0D;&#x518D;&#x6709;&#x7528;&#xFF0C;&#x6700;&#x597D;&#x901A;&#x8FC7;&#x5C06;&#x5176;&#x503C;&#x8BBE;&#x7F6E;&#x4E3A;Null&#x6765;&#x91CA;&#x653E;&#x5F15;&#x7528;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x53EB;&#x505A;<strong>&#x89E3;&#x9664;&#x5F15;&#x7528;</strong>&#x3002;<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createPerson</span>(<span class="params">name</span>) </span>{</div><div class="line">	<span class="keyword">var</span> localPerson = <span class="keyword">new</span> <span class="built_in">Object</span>();</div><div class="line">	localPerson.name = name;</div><div class="line">	<span class="keyword">return</span> localPerson;</div><div class="line">}</div><div class="line"><span class="keyword">var</span> globalPerson = createPerson(<span class="string">&apos;wq&apos;</span>);</div><div class="line"><span class="comment">//&#x624B;&#x5DE5;&#x89E3;&#x9664;globalPerson&#x7684;&#x5F15;&#x7528;</span></div><div class="line">globalPerson = <span class="literal">null</span>;</div></pre></td></tr></table></figure></p>
+<p>localPerson&#x4F1A;&#x5728;&#x51FD;&#x6570;&#x6267;&#x884C;&#x5B8C;&#x6BD5;&#x540E;&#x79BB;&#x5F00;&#x6267;&#x884C;&#x73AF;&#x5883;&#xFF0C;&#x65E0;&#x9700;&#x663E;&#x5F0F;&#x89E3;&#x9664;&#x5F15;&#x7528;&#xFF0C;globalPerson&#x5219;&#x9700;&#x8981;&#x6211;&#x4EEC;&#x4E0D;&#x7528;&#x7684;&#x65F6;&#x5019;&#x89E3;&#x9664;&#x3002;<br>&#x89E3;&#x9664;&#x5F15;&#x7528;&#x540E;&#x4E0D;&#x4E00;&#x5B9A;&#x4F1A;&#x81EA;&#x52A8;&#x56DE;&#x6536;&#x8BE5;&#x503C;&#x6240;&#x5360;&#x5185;&#x5B58;&#x3002;&#x89E3;&#x9664;&#x5F15;&#x7528;&#x7684;&#x771F;&#x6B63;&#x76EE;&#x7684;&#x662F;&#x8BA9;&#x503C;&#x8131;&#x79BB;&#x6267;&#x884C;&#x73AF;&#x5883;&#xFF0C;&#x4EE5;&#x4FBF;&#x5783;&#x573E;&#x6536;&#x96C6;&#x5668;&#x4E0B;&#x6B21;&#x8FD0;&#x884C;&#x65F6;&#x5C06;&#x5176;&#x56DE;&#x6536;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.smallfullstack.com/2016/08/22/jsbase2/" data-id="cis5ma0cu00023ms0jlrdr9lj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/18/loadfast1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">首屏加载优化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/22/jsbase2/">变量、作用域和内存问题</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/18/loadfast1/">首屏加载优化</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/17/facetotianmao/">前端</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/12/jsbase1/">js 基本概念 (主要是es5)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 wq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">主页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

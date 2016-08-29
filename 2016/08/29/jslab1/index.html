@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>innerHTML和createDocumentFragment性能分析 | wq&#39;smallfullstack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="&amp;#x5F88;&amp;#x591A;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x6709;&amp;#x5411;dom&amp;#x4E2D;&amp;#x8FFD;&amp;#x52A0;&amp;#x5185;&amp;#x5BB9;&amp;#x7684;&amp;#x9700;&amp;#x6C42;&amp;#xFF0C;&amp;#x7B14;&amp;#x8005;&amp;#x5DF2;&amp;#x77E5;&amp;#x7684;&amp;#x4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="innerHTML和createDocumentFragment性能分析">
+<meta property="og:url" content="http://www.smallfullstack.com/2016/08/29/jslab1/index.html">
+<meta property="og:site_name" content="wq'smallfullstack">
+<meta property="og:description" content="&amp;#x5F88;&amp;#x591A;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x6709;&amp;#x5411;dom&amp;#x4E2D;&amp;#x8FFD;&amp;#x52A0;&amp;#x5185;&amp;#x5BB9;&amp;#x7684;&amp;#x9700;&amp;#x6C42;&amp;#xFF0C;&amp;#x7B14;&amp;#x8005;&amp;#x5DF2;&amp;#x77E5;&amp;#x7684;&amp;#x4">
+<meta property="og:image" content="http://www.smallfullstack.com/2016/08/29/jslab1/./1472183016343.png">
+<meta property="og:image" content="http://www.smallfullstack.com/2016/08/29/jslab1/./1472186770748.png">
+<meta property="og:image" content="http://www.smallfullstack.com/2016/08/29/jslab1/./1472186816467.png">
+<meta property="og:image" content="http://www.smallfullstack.com/2016/08/29/jslab1/./1472186992656.png">
+<meta property="og:updated_time" content="2016-08-29T10:03:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="innerHTML和createDocumentFragment性能分析">
+<meta name="twitter:description" content="&amp;#x5F88;&amp;#x591A;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x6709;&amp;#x5411;dom&amp;#x4E2D;&amp;#x8FFD;&amp;#x52A0;&amp;#x5185;&amp;#x5BB9;&amp;#x7684;&amp;#x9700;&amp;#x6C42;&amp;#xFF0C;&amp;#x7B14;&amp;#x8005;&amp;#x5DF2;&amp;#x77E5;&amp;#x7684;&amp;#x4">
+<meta name="twitter:image" content="http://www.smallfullstack.com/2016/08/29/jslab1/./1472183016343.png">
+  
+    <link rel="alternate" href="/atom.xml" title="wq&#39;smallfullstack" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">wq&#39;smallfullstack</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">主页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.smallfullstack.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-jslab1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/29/jslab1/" class="article-date">
+  <time datetime="2016-08-29T09:59:27.000Z" itemprop="datePublished">2016-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      innerHTML和createDocumentFragment性能分析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> &#x5F88;&#x591A;&#x60C5;&#x51B5;&#x4E0B;&#x6211;&#x4EEC;&#x90FD;&#x6709;&#x5411;dom&#x4E2D;&#x8FFD;&#x52A0;&#x5185;&#x5BB9;&#x7684;&#x9700;&#x6C42;&#xFF0C;&#x7B14;&#x8005;&#x5DF2;&#x77E5;&#x7684;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#xFF0C;&#x4E00;&#x79CD;&#x662F;innerHTML&#x76F4;&#x63A5;&#x63D2;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x4E00;&#x79CD;&#x662F;&#x5229;&#x7528;document.createDocumentFragment&#x521B;&#x5EFA;&#x7247;&#x6BB5;&#xFF0C;&#x5C06;&#x5185;&#x5BB9;&#x63D2;&#x5165;&#x7247;&#x6BB5;&#x7136;&#x540E;&#x518D;&#x5C06;&#x7247;&#x6BB5;&#x63D2;&#x5165;dom&#x3002;&#x4E3A;&#x4E86;&#x9A8C;&#x8BC1;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#x7684;&#x5F02;&#x540C;&#x4EE5;&#x53CA;&#x5B70;&#x4F18;&#x5B70;&#x52A3;&#xFF0C;&#x4EB2;&#x81EA;&#x64B8;&#x4E86;&#x51E0;&#x4E2A;&#x4F8B;&#x5B50;&#x9A8C;&#x8BC1;&#x4E00;&#x4E0B;&#x3002;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">   &#x8282;&#x70B9;&#x63D2;&#x5165;</div><div class="line">**/</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">nodeAppend</span>(<span class="params">el,html</span>) </span>{</div><div class="line"></div><div class="line">     <span class="keyword">var</span>   divTemp = <span class="built_in">document</span>.createElement(<span class="string">&quot;div&quot;</span>),</div><div class="line">           nodes = <span class="literal">null</span>, </div><div class="line">           fragment = <span class="built_in">document</span>.createDocumentFragment(<span class="string">&apos;div&apos;</span>);</div><div class="line">           divTemp.innerHTML= html ;</div><div class="line">           nodes = divTemp.childNodes;</div><div class="line">           <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>, length=nodes.length; i&lt;length; i+=<span class="number">1</span>) {</div><div class="line">               fragment.appendChild(nodes[i].cloneNode(<span class="literal">true</span>));</div><div class="line">           }</div><div class="line">           el.appendChild(fragment);</div><div class="line">    </div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">   html&#x63D2;&#x5165;</div><div class="line">**/</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">htmlAppend</span>(<span class="params">el,html</span>) </span>{</div><div class="line">      <span class="keyword">var</span> inner = el.innerHTML;</div><div class="line">      el.innerHTML = inner+html;</div><div class="line">}</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">var</span> el4nodeappend = <span class="built_in">document</span>.createElement(<span class="string">&apos;div&apos;</span>);</div><div class="line"><span class="keyword">var</span> el4htmlappend = <span class="built_in">document</span>.createElement(<span class="string">&apos;div&apos;</span>);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">console</span>.time(<span class="string">&apos;nodeappend1 time&apos;</span>);</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i&lt;<span class="number">10</span>;i++) {</div><div class="line">       nodeAppend(el4nodeappend,<span class="string">&apos;nodeappend&apos;</span>);</div><div class="line"></div><div class="line">}</div><div class="line"><span class="built_in">console</span>.timeEnd(<span class="string">&apos;nodeappend1 time&apos;</span>);</div><div class="line"><span class="built_in">console</span>.log(<span class="string">&apos;------------&#x5206;&#x5272;&#x7EBF;-----------&apos;</span>);</div><div class="line"><span class="built_in">console</span>.time(<span class="string">&apos;htmlappend2 time&apos;</span>);</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i&lt;<span class="number">10</span>;i++) {</div><div class="line">       htmlAppend(el4htmlappend,<span class="string">&apos;htmlappend&apos;</span>);</div><div class="line"></div><div class="line">}</div><div class="line"><span class="built_in">console</span>.timeEnd(<span class="string">&apos;htmlappend2 time&apos;</span>);</div><div class="line"></div><div class="line"></div><div class="line"><span class="built_in">console</span>.time(<span class="string">&apos;nodeappend time&apos;</span>);</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i&lt;<span class="number">1000</span>;i++) {</div><div class="line">       nodeAppend(el4nodeappend,<span class="string">&apos;nodeappend&apos;</span>);</div><div class="line"></div><div class="line">}</div><div class="line"><span class="built_in">console</span>.timeEnd(<span class="string">&apos;nodeappend time&apos;</span>);</div><div class="line"><span class="built_in">console</span>.log(<span class="string">&apos;------------&#x5206;&#x5272;&#x7EBF;-----------&apos;</span>);</div><div class="line"><span class="built_in">console</span>.time(<span class="string">&apos;htmlappend time&apos;</span>);</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i&lt;<span class="number">1000</span>;i++) {</div><div class="line">       htmlAppend(el4htmlappend,<span class="string">&apos;htmlappend&apos;</span>);</div><div class="line"></div><div class="line">}</div><div class="line"><span class="built_in">console</span>.timeEnd(<span class="string">&apos;htmlappend time&apos;</span>);</div></pre></td></tr></table></figure>
+<p><img src="/2016/08/29/jslab1/./1472183016343.png" alt="Alt text"><br>&#x6D4B;&#x5B9A;&#x7ED3;&#x679C;&#x5982;&#x56FE;&#xFF0C;&#x53D1;&#x73B0;&#x5728;10&#x6B21;&#x5FAA;&#x73AF;&#x7684;&#x65F6;&#x5019;innerHTML&#x65B9;&#x6CD5;&#x66F4;&#x5FEB;&#xFF0C;&#x4F46;1000&#x6B21;&#x7684;&#x65F6;&#x5019;&#x901F;&#x5EA6;&#x5B8C;&#x5168;&#x4E0D;&#x5982;createDocumentFragment,&#x5176;&#x5B9E;&#x51FA;&#x73B0;&#x8FD9;&#x6837;&#x7684;&#x7ED3;&#x679C;&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x9884;&#x6599;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;js&#x4E2D;string&#x7C7B;&#x578B;&#x7684;&#x503C;&#x662F;&#x4E0D;&#x53EF;&#x53D8;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x6BCF;&#x6B21;&#x7684;&#x8D4B;&#x503C;&#x5176;&#x5B9E;&#x90FD;&#x662F;&#x5148;&#x9500;&#x6BC1;&#x539F;&#x6765;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x7528;&#x53E6;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x65B0;&#x503C;&#x5F97;&#x5B57;&#x7B26;&#x4E32;&#x586B;&#x5145;&#x8BE5;&#x53D8;&#x91CF;&#xFF0C;&#x5B57;&#x7B26;&#x4E32;&#x8D8A;&#x591A;&#x6539;&#x52A8;&#x7684;&#x6210;&#x672C;&#x4E5F;&#x5C31;&#x8D8A;&#x5927;&#x3002;nodeAppend&#x51FD;&#x6570;&#x4E2D;&#x8FDB;&#x884C;&#x7684;&#x64CD;&#x4F5C;&#x5219;&#x662F;&#x6BD4;&#x8F83;&#x5E73;&#x5747;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x76F8;&#x5BF9;&#x7B80;&#x5355;&#x7684;&#x5B57;&#x4E32;&#x64CD;&#x4F5C;&#x5F00;&#x9500;&#x8981;&#x5927;&#x3002;<br>&#x63A5;&#x4E0B;&#x6765;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x63D2;&#x503C;&#x5B8C;&#x540E;&#x7684;<strong>el4nodeappend</strong>&#x548C;<strong>el4htmlappend</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">&apos;el4nodeappend &#x7ED3;&#x6784;&apos;</span>,el4nodeappend);</div><div class="line"><span class="built_in">console</span>.log(<span class="string">&apos;el4htmlappend &#x7ED3;&#x6784;&apos;</span>,el4htmlappend);</div></pre></td></tr></table></figure>
+<p><img src="/2016/08/29/jslab1/./1472186770748.png" alt="Alt text"><br><img src="/2016/08/29/jslab1/./1472186816467.png" alt="Alt text"><br>&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x81EA;&#x8282;&#x70B9;&#x6570;&#x91CF;&#x4E0D;&#x4E00;&#x6837;&#xFF0C;&#x4E24;&#x4E2A;&#x5BF9;&#x8C61;&#x7684;&#x5927;&#x5C0F;&#x5DEE;&#x8DDD;&#x81EA;&#x7136;&#x4E00;&#x76EE;&#x4E86;&#x7136;&#x3002;&#x90A3;&#x4E48;&#x63A5;&#x4E0B;&#x6765;&#x518D;&#x628A;&#x4E24;&#x4E2A;&#x5BF9;&#x8C61;&#x63D2;&#x5165;dom&#x6240;&#x82B1;&#x8D39;&#x65F6;&#x95F4;&#x7ED3;&#x679C;&#x4E5F;&#x5C31;&#x663E;&#x800C;&#x6613;&#x89C1;&#x3002;</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">&apos;el4nodeappend &#x7ED3;&#x6784;&apos;</span>,el4nodeappend);</div><div class="line"><span class="built_in">console</span>.log(<span class="string">&apos;el4htmlappend &#x7ED3;&#x6784;&apos;</span>,el4htmlappend);</div><div class="line"><span class="built_in">console</span>.time(<span class="string">&apos;el4nodeappend to dom&apos;</span>)</div><div class="line"><span class="built_in">document</span>.body.appendChild(el4nodeappend); </div><div class="line"><span class="built_in">console</span>.timeEnd(<span class="string">&apos;el4nodeappend to dom&apos;</span>);</div><div class="line"><span class="built_in">console</span>.time(<span class="string">&apos;el4htmlappend to dom&apos;</span>);</div><div class="line"><span class="built_in">document</span>.body.appendChild(el4htmlappend);</div><div class="line"><span class="built_in">console</span>.timeEnd(<span class="string">&apos;el4htmlappend to dom&apos;</span>);</div></pre></td></tr></table></figure>
+<p><img src="/2016/08/29/jslab1/./1472186992656.png" alt="Alt text"></p>
+<p>&#x53C2;&#x8003;&#x6587;&#x7AE0;&#xFF1A;<br><a href="http://www.zhangxinxu.com/wordpress/2013/05/js-dom-basic-useful-method/" target="_blank" rel="external">http://www.zhangxinxu.com/wordpress/2013/05/js-dom-basic-useful-method/</a><br>JavaScript&#x9AD8;&#x7EA7;&#x7A0B;&#x5E8F;&#x8BBE;&#x8BA1; &#x7B2C;&#x4E09;&#x7248;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.smallfullstack.com/2016/08/29/jslab1/" data-id="cisfvkeha0001zks0wun6evfe" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/29/jslab2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用localStorage创建缓存层
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/22/jsbase3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">引用类型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/08/29/jslab2/">使用localStorage创建缓存层</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/29/jslab1/">innerHTML和createDocumentFragment性能分析</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/22/jsbase3/">引用类型</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/22/jsbase2/">变量、作用域和内存问题</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/18/loadfast1/">首屏加载优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 wq<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">主页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
